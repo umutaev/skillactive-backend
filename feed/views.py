@@ -4,8 +4,10 @@ from feed.models import FeedModel
 from feed.serializers import FeedSerialier
 from django.http import JsonResponse, HttpResponse
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
 
 @csrf_exempt
+@api_view(['GET', 'POST'])
 def feed_list(request):
     if request.method == "GET":
         feed = FeedModel.objects.all()
@@ -21,6 +23,7 @@ def feed_list(request):
         return JsonResponse(serializer.errors, status=400)
 
 @csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
 def feed_detail(request, pk):
     try:
         feed_object = FeedModel.objects.get(pk=pk)

@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'feed'
+    'rest_framework.authtoken',
+    'feed',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -84,6 +86,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'skillactive.wsgi.application'
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # <-- And here
+    ],
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

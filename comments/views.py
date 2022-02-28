@@ -1,6 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
 from comments.models import CommentModel
-from feed.models import FeedModel
 from comments.serializers import CommentSerializer
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from rest_framework.parsers import JSONParser
@@ -64,22 +63,6 @@ def post_comment(request, pk):
         serializer.save()
         return JsonResponse(serializer.data, status=201, json_dumps_params={"ensure_ascii": False})
     return JsonResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-@api_view(['PUT', 'DELETE'])
-def modify(request, pk):
-    if request.method == "PUT":
-        comment = get_object_or_404(CommentModel, pk=pk)
-        if not (request.user.is_staff or comment.user == request.user):
-            raise PermissionDenied
-        data = JSONParser().parse(request)
-        serializer = CommentModel(comment, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, json_dumps_params={"ensure_ascii": False})
-        return JsonResponse(serializer.errors, status=400)
-
 
 
 """@csrf_exempt

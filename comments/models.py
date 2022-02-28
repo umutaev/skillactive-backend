@@ -19,7 +19,7 @@ class CommentModel(models.Model):
     user = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL)
     reply_to = models.ForeignKey('self', null=True, blank=True, on_delete=models.DO_NOTHING, related_name='replies')  # if answer
     feed_item = models.ForeignKey('feed.FeedModel', null=True, blank=True, on_delete=models.CASCADE, related_name="comments")  # if comment
-    # club_item = models.ForeignKey('ClubModel', null=True, blank=True, on_delete=models.CASCADE)  # if review
+    club_item = models.ForeignKey('clubs.ClubModel', null=True, blank=True, on_delete=models.CASCADE, related_name="comments")  # if review
 
     name = models.CharField(max_length=1024, blank=True, null=True)  # if anonymous
     type = models.CharField(max_length=7, choices=Type.choices, blank=False)

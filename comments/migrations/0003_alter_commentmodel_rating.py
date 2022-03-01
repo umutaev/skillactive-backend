@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('comments', '0002_alter_commentmodel_images'),
+        ("comments", "0002_alter_commentmodel_images"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='commentmodel',
-            name='rating',
-            field=models.IntegerField(blank=True, choices=[(1, 'One'), (2, 'Two'), (3, 'Three'), (4, 'Four'), (5, 'Five')], null=True),
+            model_name="commentmodel",
+            name="rating",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (1, "One"),
+                    (2, "Two"),
+                    (3, "Three"),
+                    (4, "Four"),
+                    (5, "Five"),
+                ],
+                null=True,
+            ),
         ),
     ]

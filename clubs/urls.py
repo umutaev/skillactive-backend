@@ -9,5 +9,5 @@ urlpatterns = [
     path("<int:pk>/", club),
     path("search/", search_club),
     path("<int:pk>/applications", applications),
-    path("<int:pk_club>/applications/<int:pk_application>", application)
+    path("<int:pk_club>/applications/<int:pk_application>", application),
 ]

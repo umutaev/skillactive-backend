@@ -20,12 +20,16 @@ def post_club(request):
         raise PermissionDenied
     data["author"] = author.pk
 
-    data["searchable_title"] = "".join([i.lower() for i in data.get("title", "") if i.isalpha()])
-    
+    data["searchable_title"] = "".join(
+        [i.lower() for i in data.get("title", "") if i.isalpha()]
+    )
+
     serializer = ClubSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
-        return JsonResponse(serializer.data, status=201, json_dumps_params={"ensure_ascii": False})
+        return JsonResponse(
+            serializer.data, status=201, json_dumps_params={"ensure_ascii": False}
+        )
     return JsonResponse(serializer.errors, status=400)
 
 
@@ -35,7 +39,7 @@ def get_clubs_user(request):
     user = request.user
     if type(user) == AnonymousUser:
         raise PermissionDenied
-    
+
     clubs = ClubModel.objects.filter(author__exact=user).all()
     serializer = ClubSerializer(clubs, many=True)
     return JsonResponse(serializer.data, safe=False)
@@ -55,7 +59,9 @@ def club(request, pk):
         serializer = ClubSerializer(club, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, json_dumps_params={"ensure_ascii": False})
+            return JsonResponse(
+                serializer.data, json_dumps_params={"ensure_ascii": False}
+            )
         return JsonResponse(serializer.errors, status=400)
     elif request.method == "DELETE":
         if not (request.user.is_staff or club.author == request.user):
@@ -71,19 +77,25 @@ def search_club(request):
     clubs = ClubModel.objects
 
     if "title" in data:
-        clubs = clubs.filter(searchable_title__contains="".join([i.lower() for i in data["title"] if i.isalpha()]))
+        clubs = clubs.filter(
+            searchable_title__contains="".join(
+                [i.lower() for i in data["title"] if i.isalpha()]
+            )
+        )
 
     if "min_price" in data:
         clubs = clubs.filter(price__gte=data["min_price"])
-    
+
     if "max_price" in data:
         clubs = clubs.filter(price__lte=data["max_price"])
 
     if "age" in data:
         clubs = clubs.filter(Q(min_age__lte=data["age"]) & Q(max_age__gte=data["age"]))
-    
+
     if "gender" in data and data["gender"]:
-        clubs = clubs.filter(Q(gender__exact=data["gender"]) | Q(gender__exact=ClubModel.Gender.BOTH))
+        clubs = clubs.filter(
+            Q(gender__exact=data["gender"]) | Q(gender__exact=ClubModel.Gender.BOTH)
+        )
 
     # category and timetable filtration
 

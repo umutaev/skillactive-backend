@@ -7,14 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('clubs', '0001_initial'),
-        ('comments', '0007_commentmodel_deleted_alter_commentmodel_images_and_more'),
+        ("clubs", "0001_initial"),
+        ("comments", "0007_commentmodel_deleted_alter_commentmodel_images_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='commentmodel',
-            name='club_item',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='clubs.clubmodel'),
+            model_name="commentmodel",
+            name="club_item",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="comments",
+                to="clubs.clubmodel",
+            ),
         ),
     ]

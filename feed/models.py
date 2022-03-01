@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+
 class FeedModel(models.Model):
     class Type(models.TextChoices):
         ARTICLE = "ARTICLE", "Article"

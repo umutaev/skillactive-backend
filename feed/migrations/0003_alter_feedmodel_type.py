@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feed', '0002_alter_feedmodel_address_alter_feedmodel_date_and_more'),
+        ("feed", "0002_alter_feedmodel_address_alter_feedmodel_date_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='feedmodel',
-            name='type',
-            field=models.CharField(choices=[('ARTICLE', 'Article'), ('ARTICLE_SPONSORED', 'Sponsored article'), ('EVENT', 'Event'), ('EVENT_SPONSORED', 'Sponsored event')], max_length=17),
+            model_name="feedmodel",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("ARTICLE", "Article"),
+                    ("ARTICLE_SPONSORED", "Sponsored article"),
+                    ("EVENT", "Event"),
+                    ("EVENT_SPONSORED", "Sponsored event"),
+                ],
+                max_length=17,
+            ),
         ),
     ]

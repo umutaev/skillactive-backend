@@ -12,26 +12,85 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('feed', '0003_alter_feedmodel_type'),
+        ("feed", "0003_alter_feedmodel_type"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CommentModel',
+            name="CommentModel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('anonymous', models.BooleanField()),
-                ('name', models.CharField(blank=True, max_length=1024, null=True)),
-                ('type', models.CharField(choices=[('COMMENT', 'Comment'), ('REVIEW', 'Review'), ('ANSWER', 'Answer to review or comment')], max_length=7)),
-                ('title', models.CharField(blank=True, max_length=1024, null=True)),
-                ('rating', models.IntegerField(blank=True, choices=[(1, 'One'), (2, 'Two'), (3, 'Three'), (4, 'Four'), (5, 'Five')])),
-                ('text', models.TextField()),
-                ('images', django.contrib.postgres.fields.ArrayField(base_field=models.URLField(), size=10)),
-                ('creation_date', models.DateTimeField(auto_now_add=True)),
-                ('likes_amount', models.IntegerField(default=0)),
-                ('feed_item', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='feed.feedmodel')),
-                ('reply_to', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='comments.commentmodel')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("anonymous", models.BooleanField()),
+                ("name", models.CharField(blank=True, max_length=1024, null=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("COMMENT", "Comment"),
+                            ("REVIEW", "Review"),
+                            ("ANSWER", "Answer to review or comment"),
+                        ],
+                        max_length=7,
+                    ),
+                ),
+                ("title", models.CharField(blank=True, max_length=1024, null=True)),
+                (
+                    "rating",
+                    models.IntegerField(
+                        blank=True,
+                        choices=[
+                            (1, "One"),
+                            (2, "Two"),
+                            (3, "Three"),
+                            (4, "Four"),
+                            (5, "Five"),
+                        ],
+                    ),
+                ),
+                ("text", models.TextField()),
+                (
+                    "images",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.URLField(), size=10
+                    ),
+                ),
+                ("creation_date", models.DateTimeField(auto_now_add=True)),
+                ("likes_amount", models.IntegerField(default=0)),
+                (
+                    "feed_item",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="feed.feedmodel",
+                    ),
+                ),
+                (
+                    "reply_to",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="comments.commentmodel",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

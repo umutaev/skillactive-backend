@@ -8,24 +8,47 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='FeedModel',
+            name="FeedModel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=1024)),
-                ('type', models.CharField(choices=[('AR', 'Article'), ('AS', 'Sponsored article'), ('EV', 'Event'), ('ES', 'Sponsored event')], max_length=2)),
-                ('text', models.TextField(blank=True)),
-                ('address', models.CharField(blank=True, max_length=1024)),
-                ('images', django.contrib.postgres.fields.ArrayField(base_field=models.URLField(), size=10)),
-                ('date', models.DateTimeField(blank=True)),
-                ('creation_date', models.DateTimeField(auto_now_add=True)),
-                ('likes_amount', models.IntegerField(default=0)),
-                ('views_amount', models.IntegerField(default=0)),
-                ('price', models.IntegerField(blank=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=1024)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("AR", "Article"),
+                            ("AS", "Sponsored article"),
+                            ("EV", "Event"),
+                            ("ES", "Sponsored event"),
+                        ],
+                        max_length=2,
+                    ),
+                ),
+                ("text", models.TextField(blank=True)),
+                ("address", models.CharField(blank=True, max_length=1024)),
+                (
+                    "images",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.URLField(), size=10
+                    ),
+                ),
+                ("date", models.DateTimeField(blank=True)),
+                ("creation_date", models.DateTimeField(auto_now_add=True)),
+                ("likes_amount", models.IntegerField(default=0)),
+                ("views_amount", models.IntegerField(default=0)),
+                ("price", models.IntegerField(blank=True)),
             ],
         ),
     ]

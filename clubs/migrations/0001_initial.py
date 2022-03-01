@@ -16,19 +16,49 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ClubModel',
+            name="ClubModel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=1024)),
-                ('address', models.CharField(max_length=1024)),
-                ('description', models.TextField()),
-                ('price', models.IntegerField(default=0)),
-                ('min_age', models.IntegerField()),
-                ('max_age', models.IntegerField()),
-                ('gender', models.CharField(choices=[('MALE', 'Male'), ('FEMALE', 'Female'), ('BOTH', 'Male and Female')], default='BOTH', max_length=6)),
-                ('opened', models.BooleanField(default=True)),
-                ('images', django.contrib.postgres.fields.ArrayField(base_field=models.URLField(), blank=True, default=list, size=10)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=1024)),
+                ("address", models.CharField(max_length=1024)),
+                ("description", models.TextField()),
+                ("price", models.IntegerField(default=0)),
+                ("min_age", models.IntegerField()),
+                ("max_age", models.IntegerField()),
+                (
+                    "gender",
+                    models.CharField(
+                        choices=[
+                            ("MALE", "Male"),
+                            ("FEMALE", "Female"),
+                            ("BOTH", "Male and Female"),
+                        ],
+                        default="BOTH",
+                        max_length=6,
+                    ),
+                ),
+                ("opened", models.BooleanField(default=True)),
+                (
+                    "images",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.URLField(), blank=True, default=list, size=10
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

@@ -9,20 +9,48 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('clubs', '0002_clubmodel_searchable_title'),
+        ("clubs", "0002_clubmodel_searchable_title"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ApplicationModel',
+            name="ApplicationModel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('NEW', 'New'), ('PROCESSING', 'Application in progress'), ('SEEN', 'Application seen')], default='NEW', max_length=10)),
-                ('name', models.CharField(max_length=1024)),
-                ('phone', models.CharField(max_length=64)),
-                ('text', models.TextField(null=True)),
-                ('creation_date', models.DateTimeField(auto_now_add=True)),
-                ('club', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='applications', to='clubs.clubmodel')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("NEW", "New"),
+                            ("PROCESSING", "Application in progress"),
+                            ("SEEN", "Application seen"),
+                        ],
+                        default="NEW",
+                        max_length=10,
+                    ),
+                ),
+                ("name", models.CharField(max_length=1024)),
+                ("phone", models.CharField(max_length=64)),
+                ("text", models.TextField(null=True)),
+                ("creation_date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "club",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="applications",
+                        to="clubs.clubmodel",
+                    ),
+                ),
             ],
         ),
     ]

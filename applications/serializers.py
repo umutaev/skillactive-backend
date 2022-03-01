@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from applications.models import ApplicationModel
 
+
 class ApplicationSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.status = validated_data.get("status", instance.status)
@@ -9,7 +10,5 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ApplicationModel
-        fields = ['id', 'status', 'club', 'name', 'phone', 'text', 'creation_date']
-        extra_kwargs = {
-            "creation_date": {'read_only': True}
-        }
+        fields = ["id", "status", "club", "name", "phone", "text", "creation_date"]
+        extra_kwargs = {"creation_date": {"read_only": True}}

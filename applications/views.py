@@ -26,7 +26,9 @@ def applications(request, pk):
         serializer = ApplicationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201, json_dumps_params={"ensure_ascii": False})
+            return JsonResponse(
+                serializer.data, status=201, json_dumps_params={"ensure_ascii": False}
+            )
         return JsonResponse(serializer.errors, status=400)
 
 
@@ -48,7 +50,9 @@ def application(request, pk_club, pk_application):
         serializer = ApplicationSerializer(application, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, json_dumps_params={"ensure_ascii": False})
+            return JsonResponse(
+                serializer.data, json_dumps_params={"ensure_ascii": False}
+            )
         return JsonResponse(serializer.errors, status=400)
     if request.method == "DELETE":
         application.delete()

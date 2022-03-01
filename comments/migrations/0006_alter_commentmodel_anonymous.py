@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('comments', '0005_alter_commentmodel_feed_item'),
+        ("comments", "0005_alter_commentmodel_feed_item"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='commentmodel',
-            name='anonymous',
+            model_name="commentmodel",
+            name="anonymous",
             field=models.BooleanField(default=False),
         ),
     ]

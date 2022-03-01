@@ -8,23 +8,31 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('comments', '0006_alter_commentmodel_anonymous'),
+        ("comments", "0006_alter_commentmodel_anonymous"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='commentmodel',
-            name='deleted',
+            model_name="commentmodel",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='commentmodel',
-            name='images',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.URLField(), blank=True, default=list, size=10),
+            model_name="commentmodel",
+            name="images",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.URLField(), blank=True, default=list, size=10
+            ),
         ),
         migrations.AlterField(
-            model_name='commentmodel',
-            name='reply_to',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='replies', to='comments.commentmodel'),
+            model_name="commentmodel",
+            name="reply_to",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="replies",
+                to="comments.commentmodel",
+            ),
         ),
     ]

@@ -166,3 +166,14 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# EMAIL
+EMAIL_HOST = "smtp.mail.ru"
+EMAIL_HOST_PASSWORD = "4UGJ9Ab7dg43Ecy"
+EMAIL_HOST_USER = "noreply@skillactive.ru"
+EMAIL_PORT = "465"
+DEFAULT_FROM_EMAIL = "noreply@skillactive.ru"
+EMAIL_USE_SSL = True
+EMAIL_TIMEOUT = 10
+
+HOST_VARIABLE = "http://127.0.0.1:8000/"

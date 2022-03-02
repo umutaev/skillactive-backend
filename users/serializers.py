@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from users.email import send_activation_email
 
 UserModel = get_user_model()
 
@@ -14,7 +15,9 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data["username"],
             password=validated_data["password"],
         )
-
+        user.is_active = False
+        send_activation_email(user)
+        user.save()
         return user
 
     class Meta:
@@ -24,7 +27,6 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
-            "groups",
             "email",
             "password",
         )

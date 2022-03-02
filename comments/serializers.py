@@ -26,6 +26,7 @@ class CommentSerializer(serializers.ModelSerializer):
             "reply_to",
             "replies",
             "feed_item",
+            "club_item",
             "name",
             "type",
             "title",
@@ -36,3 +37,14 @@ class CommentSerializer(serializers.ModelSerializer):
             "likes_amount",
             "deleted",
         ]
+        extra_kwargs = {
+            "anonymous": {"read_only": True},
+            "user": {"read_only": True},
+            "reply_to": {"read_only": True},
+            "replies": {"read_only": True},
+            "feed_item": {"read_only": True},
+            "club_item": {"read_only": True},
+            "creation_date": {"read_only": True},
+            "likes_amount": {"read_only": True},
+            "deleted": {"read_only": True},
+        }

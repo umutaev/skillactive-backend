@@ -7,6 +7,46 @@ from rest_framework.decorators import api_view
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
+from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+
+class CommentView(
+    CreateModelMixin,
+    DestroyModelMixin,
+    UpdateModelMixin,
+    RetrieveModelMixin,
+    GenericAPIView,
+):
+    queryset = CommentModel.objects.all()
+    serializer_class = CommentSerializer
+    lookup_field = "pk"
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    @extend_schema(description="Get a specific comment by primary key.")
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Post a reply on a specific comment with specified primary key."
+    )
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    @extend_schema(description="Edit a specific comment by primary key.")
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @extend_schema(description="Delete a specific comment by primary key.")
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 @csrf_exempt

@@ -9,6 +9,49 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
 from comments.models import CommentModel
 from comments.serializers import CommentSerializer
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+
+class FeedView(ListAPIView, CreateAPIView):
+    queryset = FeedModel.objects.all()
+    serializer_class = FeedSerialier
+    lookup_field = "pk"
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        print(args, kwargs)
+        if not request.user.is_staff:
+            raise PermissionDenied
+        return super().create(request, *args, **kwargs)
+
+
+class FeedRecordView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
+    queryset = FeedModel.objects.all()
+    serializer_class = FeedSerialier
+    lookup_field = "pk"
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def update(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied
+        return super().destroy(request, *args, **kwargs)
 
 
 @csrf_exempt

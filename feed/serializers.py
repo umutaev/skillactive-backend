@@ -8,13 +8,13 @@ class FeedSerialier(serializers.Serializer):
     title = serializers.CharField(required=True, allow_blank=False, max_length=1024)
     type = serializers.ChoiceField(choices=FeedModel.Type, required=True)
     text = serializers.CharField(required=False)
-    address = serializers.CharField(max_length=1024, required=False)
+    address = serializers.CharField(max_length=1024, required=False, allow_null=True)
     images = serializers.ListField(required=True)
-    date = serializers.DateTimeField(required=False)
+    date = serializers.DateTimeField(required=False, allow_null=True)
     creation_date = serializers.DateTimeField(read_only=True)
     likes_amount = serializers.IntegerField(read_only=True)
     views_amount = serializers.IntegerField(read_only=True)
-    price = serializers.IntegerField(required=False)
+    price = serializers.IntegerField(required=False, allow_null=True)
 
     def create(self, validated_data):
         return FeedModel.objects.create(**validated_data)

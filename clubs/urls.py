@@ -1,13 +1,18 @@
 from webbrowser import get
 from django.urls import path
-from clubs.views import club, post_club, get_clubs_user, search_club
+from clubs.views import (
+    club,
+    post_club,
+    get_clubs_user,
+    search_club,
+    ClubView,
+    SpecificClubView,
+)
 from applications.views import applications, application
 
 urlpatterns = [
-    path("", post_club),
-    path("my/", get_clubs_user),
-    path("<int:pk>/", club),
-    path("search/", search_club),
+    path("", ClubView.as_view()),
+    path("<int:pk>/", SpecificClubView.as_view()),
     path("<int:pk>/applications", applications),
     path("<int:pk_club>/applications/<int:pk_application>", application),
 ]

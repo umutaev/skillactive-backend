@@ -8,6 +8,101 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from clubs.models import ClubModel
 from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+
+class ClubView(ListAPIView, CreateAPIView):
+    queryset = ClubModel.objects.all()
+    serializer_class = ClubSerializer
+    lookup_field = "pk"
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        print(self.request.query_params)
+        title = self.request.query_params.get("title", None)
+        queryset = self.queryset
+        if title is not None:
+            searchable_title = "".join([i.lower() for i in title if i.isalpha()])
+            queryset = queryset.filter(searchable_title__contains=searchable_title)
+        min_price = self.request.query_params.get("min_price", None)
+        if min_price is not None:
+            queryset = queryset.filter(price__gte=min_price)
+        max_price = self.request.query_params.get("max_price", None)
+        if max_price is not None:
+            queryset = queryset.filter(price__lte=max_price)
+        age = self.request.query_params.get("age", None)
+        if age is not None:
+            queryset = queryset.filter(Q(min_age__lte=age) & Q(max_age__gte=age))
+        gender = self.request.query_params.get("gender", None)
+        if gender is not None:
+            queryset = queryset.filter(
+                Q(gender__exact=gender) | Q(gender__exact=ClubModel.Gender.BOTH)
+            )
+        owned = self.request.query_params.get("owned", None)
+        if owned is not None and not isinstance(self.request.user, AnonymousUser):
+            queryset = queryset.filter(author=self.request.user)
+        elif not self.request.user.is_staff:
+            queryset = queryset.filter(opened=True)
+        return queryset.all()
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data["author"] = request.user.pk
+        data["searchable_title"] = "".join(
+            [i.lower() for i in data.get("title", "") if i.isalpha()]
+        )
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class SpecificClubView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
+    queryset = ClubModel.objects.all()
+    serializer_class = ClubSerializer
+    lookup_field = "pk"
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def update(self, request, *args, **kwargs):
+        if not request.user.is_staff and not self.get_object().author == request.user:
+            raise PermissionDenied
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        if not request.user.is_staff and not self.get_object().author == request.user:
+            raise PermissionDenied
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if not request.user.is_staff and not self.get_object().author == request.user:
+            raise PermissionDenied
+        return super().destroy(request, *args, **kwargs)
 
 
 @csrf_exempt

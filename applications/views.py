@@ -7,6 +7,88 @@ from django.http import HttpResponse, JsonResponse
 from clubs.models import ClubModel
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
+from rest_framework.response import Response
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+
+class ApplicationsView(ListAPIView, CreateAPIView):
+    queryset = ApplicationModel.objects.all()
+    serializer_class = ApplicationSerializer
+    lookup_field = "club"
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(club=kwargs["club"]).all()
+        if (
+            not queryset.first().club.author == request.user
+            and not request.user.is_staff
+        ):
+            raise PermissionDenied
+
+        """page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)"""
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data["club"] = kwargs["club"]
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+
+class ApplicationView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
+    queryset = ApplicationModel.objects.all()
+    serializer_class = ApplicationSerializer
+    lookup_field = "pk"
+
+    def retrieve(self, request, *args, **kwargs):
+        if (
+            not self.get_object().club.author == request.user
+            and not request.user.is_staff
+        ):
+            raise PermissionDenied
+        return super().retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if (
+            not self.get_object().club.author == request.user
+            and not request.user.is_staff
+        ):
+            raise PermissionDenied
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        if (
+            not self.get_object().club.author == request.user
+            and not request.user.is_staff
+        ):
+            raise PermissionDenied
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if (
+            not self.get_object().club.author == request.user
+            and not request.user.is_staff
+        ):
+            raise PermissionDenied
+        return super().destroy(request, *args, **kwargs)
 
 
 @csrf_exempt

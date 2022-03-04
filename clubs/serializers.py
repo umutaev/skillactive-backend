@@ -40,4 +40,6 @@ class ClubSerializer(serializers.ModelSerializer):
             "images",
             "comments",
         ]
-        extra_kwargs = {"comments": {"read_only": True}}
+        extra_kwargs = {
+            "comments": {"read_only": True},
+        }

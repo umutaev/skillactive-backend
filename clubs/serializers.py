@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from clubs.models import ClubModel
+from comments.serializers import CommentSerializer
 
 
 class ClubSerializer(serializers.ModelSerializer):
@@ -23,8 +24,11 @@ class ClubSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    comments = CommentSerializer(read_only=True, many=True)
+
     class Meta:
         model = ClubModel
+
         fields = [
             "id",
             "searchable_title",

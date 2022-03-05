@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from feed.models import FeedModel
+from comments.serializers import CommentSerializer
 from django.db import models
 
 
@@ -15,6 +16,7 @@ class FeedSerialier(serializers.Serializer):
     likes_amount = serializers.IntegerField(read_only=True)
     views_amount = serializers.IntegerField(read_only=True)
     price = serializers.IntegerField(required=False, allow_null=True)
+    comments = CommentSerializer(read_only=True, many=True)
 
     def create(self, validated_data):
         return FeedModel.objects.create(**validated_data)

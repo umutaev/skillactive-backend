@@ -18,6 +18,8 @@ from rest_framework.generics import (
     DestroyAPIView,
 )
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 
 class ClubView(ListAPIView, CreateAPIView):
@@ -27,7 +29,6 @@ class ClubView(ListAPIView, CreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        print(self.request.query_params)
         title = self.request.query_params.get("title", None)
         queryset = self.queryset
         if title is not None:
@@ -79,6 +80,16 @@ class ClubView(ListAPIView, CreateAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("title", OpenApiTypes.STR, OpenApiParameter.QUERY),
+            OpenApiParameter("min_price", OpenApiTypes.INT, OpenApiParameter.QUERY),
+            OpenApiParameter("max_price", OpenApiTypes.INT, OpenApiParameter.QUERY),
+            OpenApiParameter("age", OpenApiTypes.INT, OpenApiParameter.QUERY),
+            OpenApiParameter("gender", OpenApiTypes.STR, OpenApiParameter.QUERY),
+            OpenApiParameter("owned", OpenApiTypes.BOOL, OpenApiParameter.QUERY),
+        ],
+    )
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 

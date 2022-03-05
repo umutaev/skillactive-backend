@@ -17,6 +17,8 @@ from rest_framework.generics import (
     DestroyAPIView,
 )
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class FeedView(ListAPIView, CreateAPIView):
@@ -118,6 +120,29 @@ def get_comments(request, feed_pk):
     comments = CommentModel.objects.filter(feed_item__exact=feed).all()
     serializer = CommentSerializer(comments, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+
+class PostComment(CreateAPIView):
+    queryset = CommentModel.objects.all()
+    serializer_class = CommentSerializer
+    lookup_field = "feed_item"
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data["type"] = CommentModel.Type.COMMENT
+        if isinstance(request.user, AnonymousUser):
+            data["anonymous"] = True
+        else:
+            data["user"] = request.user.pk
+        data["feed_item"] = kwargs[self.lookup_field]
+        print(data)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 @csrf_exempt

@@ -9,6 +9,6 @@ docker compose --env-file compose.env up
 ```  
 Then you will need to make migrations. This proccess shouldn't be done automatically, so you need to type in the next line:
 ```
-docker-compose run web python3 manage.py migrate
+docker compose run web python3 manage.py migrate
 ```  
 After theese manipulations, you will have this application running on **WEB_PORT** port of your machine.

@@ -59,9 +59,11 @@ INSTALLED_APPS = [
     "clubs",
     "applications",
     "drf_spectacular",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -176,3 +178,6 @@ EMAIL_USE_SSL = True
 EMAIL_TIMEOUT = 10
 
 HOST_VARIABLE = "http://127.0.0.1:8000/"
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = bool(get_env("CORS_ALLOW_ALL_ORIGINS", default=True))

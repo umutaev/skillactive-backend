@@ -13,6 +13,7 @@ services:
       - DBNAME
       - SECRET_KEY
       - DEBUG
+      - CORS_ALLOW_ALL_ORIGINS
     depends_on:
       - database
   database:

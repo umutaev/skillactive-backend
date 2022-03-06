@@ -5,6 +5,7 @@ click==8.0.4
 Django==4.0.2
 djangorestframework==3.13.1
 drf-spectacular==0.21.2
+gunicorn==20.1.0
 inflection==0.5.1
 jsonschema==4.4.0
 mypy-extensions==0.4.3

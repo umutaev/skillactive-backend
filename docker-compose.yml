@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    ports:
+      - "${WEB_PORT}:8000"
+    links:
+      - "database"
+    environment:
+      - DBHOST=database
+      - DBPORT=5432
+      - DBUSER
+      - DBPASS
+      - DBNAME
+      - SECRET_KEY
+      - DEBUG
+    depends_on:
+      - database
+  database:
+    image: postgres
+    environment:
+      - POSTGRES_USER=${DBUSER}
+      - POSTGRES_PASSWORD=${DBPASS}
+      - POSTGRES_DB=${DBNAME}

@@ -38,7 +38,6 @@ class CommentSerializer(serializers.ModelSerializer):
             "deleted",
         ]
         extra_kwargs = {
-            "reply_to": {"read_only": True},
             "replies": {"read_only": True},
             "creation_date": {"read_only": True},
             "likes_amount": {"read_only": True},

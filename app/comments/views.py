@@ -4,10 +4,10 @@ from comments.serializers import CommentSerializer
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -15,10 +15,51 @@ from rest_framework.mixins import (
     UpdateModelMixin,
 )
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.response import Response
+from rest_framework import status
 
 
-class CommentView(
+class CommentView(CreateAPIView):
+    queryset = CommentModel.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        if isinstance(request.user, AnonymousUser):
+            data["user"] = None
+            data["anonymous"] = True
+        else:
+            data["user"] = request.user.pk
+            data["anonymous"] = False
+        if data["type"] == CommentModel.Type.ANSWER:
+            try:
+                parent_comment = CommentModel.objects.filter(pk=data["reply_to"]).get()
+            except CommentModel.DoesNotExist:
+                return Response(
+                    data="reply_to does not exist", status=status.HTTP_404_NOT_FOUND
+                )
+            data["feed_item"] = (
+                parent_comment.feed_item.pk
+                if parent_comment.feed_item is not None
+                else None
+            )
+            data["club_item"] = (
+                parent_comment.club_item.pk
+                if parent_comment.club_item is not None
+                else None
+            )
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+
+class SpecificCommentView(
     CreateModelMixin,
     DestroyModelMixin,
     UpdateModelMixin,

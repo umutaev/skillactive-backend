@@ -17,6 +17,7 @@ class FeedSerialier(serializers.Serializer):
     views_amount = serializers.IntegerField(read_only=True)
     price = serializers.IntegerField(required=False, allow_null=True)
     comments = CommentSerializer(read_only=True, many=True)
+    tags = serializers.ListField(required=False)
 
     def create(self, validated_data):
         return FeedModel.objects.create(**validated_data)
@@ -29,5 +30,6 @@ class FeedSerialier(serializers.Serializer):
         instance.images = validated_data.get("images", instance.images)
         instance.date = validated_data.get("date", instance.date)
         instance.price = validated_data.get("price", instance.price)
+        instance.tags = validated_data.get("tags", instance.tags)
         instance.save()
         return instance

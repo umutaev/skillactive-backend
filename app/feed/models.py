@@ -19,3 +19,8 @@ class FeedModel(models.Model):
     likes_amount = models.IntegerField(default=0)
     views_amount = models.IntegerField(default=0)
     price = models.IntegerField(blank=True, null=True)
+    tags = ArrayField(
+        base_field=models.CharField(max_length=1024, blank=False, null=False),
+        null=False,
+        default=list,
+    )

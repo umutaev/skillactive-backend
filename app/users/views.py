@@ -4,12 +4,13 @@ from django.contrib.auth.hashers import check_password
 from users.tokens import account_activation_token
 from django.http import JsonResponse, HttpResponse
 
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework import permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
 
 from users.serializers import UserSerializer
 from users.email import send_activation_email
@@ -68,3 +69,11 @@ class Login(ObtainAuthToken):
             )
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key})
+
+
+class CheckStaff(RetrieveAPIView):
+    def retrieve(self, request, *args, **kwargs):
+        if request.user.is_staff:
+            return Response(data={"status": True})
+        else:
+            raise PermissionDenied

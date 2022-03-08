@@ -11,3 +11,4 @@ class CategoryModel(models.Model):
         related_name="category_childs",
         on_delete=models.DO_NOTHING,
     )
+    deleted = models.BooleanField(default=False)

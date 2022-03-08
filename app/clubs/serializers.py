@@ -21,6 +21,7 @@ class ClubSerializer(serializers.ModelSerializer):
         instance.gender = validated_data.get("gender", instance.gender)
         instance.opened = validated_data.get("opened", instance.opened)
         instance.images = validated_data.get("images", instance.images)
+        instance.category = validated_data.get("category", instance.category)
         instance.save()
         return instance
 
@@ -43,6 +44,7 @@ class ClubSerializer(serializers.ModelSerializer):
             "opened",
             "images",
             "comments",
+            "category",
         ]
         extra_kwargs = {
             "comments": {"read_only": True},

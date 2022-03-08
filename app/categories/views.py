@@ -17,6 +17,11 @@ class CategoriesView(ListAPIView, CreateAPIView):
     lookup_field = "pk"
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        q = super().get_queryset()
+        q = q.filter(deleted=False)
+        return q
+
     def create(self, request, *args, **kwargs):
         if not request.user.is_staff:
             raise PermissionDenied
@@ -42,4 +47,9 @@ class CategoryView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         if not request.user.is_staff:
             raise PermissionDenied
-        return super().destroy(request, *args, **kwargs)
+
+        instance = self.get_object()
+        instance.deleted = True
+        instance.save()
+
+        return super().retrieve(request, *args, **kwargs)

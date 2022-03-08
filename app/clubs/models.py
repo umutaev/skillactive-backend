@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth import get_user_model
+from categories.models import CategoryModel
 
 
 class ClubModel(models.Model):
@@ -27,5 +28,7 @@ class ClubModel(models.Model):
     )
     opened = models.BooleanField(default=True, null=False)
     # tags
-    # category, from model
+    category = models.ForeignKey(
+        CategoryModel, null=False, blank=False, on_delete=models.DO_NOTHING
+    )
     images = ArrayField(base_field=models.URLField(), size=10, blank=True, default=list)

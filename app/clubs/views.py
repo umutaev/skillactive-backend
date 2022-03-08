@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from clubs.serializers import ClubSerializer
@@ -48,6 +49,10 @@ class ClubView(ListAPIView, CreateAPIView):
             queryset = queryset.filter(
                 Q(gender__exact=gender) | Q(gender__exact=ClubModel.Gender.BOTH)
             )
+        categories = self.request.query_params.get("categories", None)
+        if categories is not None:
+            categories = categories.split(",")
+            queryset = queryset.filter(category__in=categories)
         owned = self.request.query_params.get("owned", None)
         if owned is not None and not isinstance(self.request.user, AnonymousUser):
             queryset = queryset.filter(author=self.request.user)
@@ -88,6 +93,12 @@ class ClubView(ListAPIView, CreateAPIView):
             OpenApiParameter("age", OpenApiTypes.INT, OpenApiParameter.QUERY),
             OpenApiParameter("gender", OpenApiTypes.STR, OpenApiParameter.QUERY),
             OpenApiParameter("owned", OpenApiTypes.BOOL, OpenApiParameter.QUERY),
+            OpenApiParameter(
+                "categories",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                description="Categories separated with comma.",
+            ),
         ],
     )
     def get(self, request, *args, **kwargs):

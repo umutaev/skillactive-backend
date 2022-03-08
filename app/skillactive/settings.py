@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "comments",
     "clubs",
     "applications",
+    "categories",
     "drf_spectacular",
     "corsheaders",
 ]

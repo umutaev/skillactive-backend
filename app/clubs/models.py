@@ -29,6 +29,6 @@ class ClubModel(models.Model):
     opened = models.BooleanField(default=True, null=False)
     # tags
     category = models.ForeignKey(
-        CategoryModel, null=False, blank=False, on_delete=models.DO_NOTHING
+        CategoryModel, null=True, blank=False, on_delete=models.DO_NOTHING
     )
     images = ArrayField(base_field=models.URLField(), size=10, blank=True, default=list)

@@ -13,16 +13,14 @@ class Migration(migrations.Migration):
         ("clubs", "0002_clubmodel_searchable_title"),
     ]
 
-    temp_default = CategoryModel.objects.all()[0]
-
     operations = [
         migrations.AddField(
             model_name="clubmodel",
             name="category",
             field=models.ForeignKey(
-                default=temp_default.pk,
                 on_delete=django.db.models.deletion.DO_NOTHING,
                 to="categories.categorymodel",
+                default=None,
             ),
             preserve_default=False,
         ),

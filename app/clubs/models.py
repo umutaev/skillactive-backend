@@ -4,6 +4,14 @@ from django.contrib.auth import get_user_model
 from categories.models import CategoryModel
 
 
+class PriceObject(models.Model):
+    name = models.CharField(max_length=1024)
+    value = models.IntegerField()
+    club = models.ForeignKey(
+        "clubs.ClubModel", related_name="price", on_delete=models.CASCADE
+    )
+
+
 class ClubModel(models.Model):
     class Gender(models.TextChoices):
         MALE = "MALE", "Male"
@@ -20,7 +28,8 @@ class ClubModel(models.Model):
     # contacts
     # tutors
     # timetable
-    price = models.IntegerField(default=0, null=False)
+    # price = models.IntegerField(default=0, null=False)
+    # price = ArrayField(base_field=PriceObject, blank=True, default=list)
     min_age = models.IntegerField()
     max_age = models.IntegerField()
     gender = models.CharField(

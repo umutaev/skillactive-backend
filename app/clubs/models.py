@@ -1,3 +1,4 @@
+from email.mime import base
 from email.policy import default
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -12,6 +13,16 @@ class PriceObject(models.Model):
     value = models.IntegerField()
     club = models.ForeignKey(
         "clubs.ClubModel", related_name="price", on_delete=models.CASCADE
+    )
+
+
+class TutorObject(models.Model):
+    name = models.CharField(max_length=1024, null=False)
+    photo = models.URLField(null=True)
+    description = models.TextField(null=True)
+    phone = models.CharField(max_length=256, null=True)
+    club = models.ForeignKey(
+        "clubs.ClubModel", related_name="tutors", on_delete=models.CASCADE
     )
 
 
@@ -31,15 +42,12 @@ class ClubModel(models.Model):
     # contacts
     # tutors
     # timetable
-    # price = models.IntegerField(default=0, null=False)
-    # price = ArrayField(base_field=PriceObject, blank=True, default=list)
     min_age = models.IntegerField()
     max_age = models.IntegerField()
     gender = models.CharField(
         choices=Gender.choices, max_length=6, default=Gender.BOTH, null=False
     )
     opened = models.BooleanField(default=True, null=False)
-    # tags
     category = models.ForeignKey(
         CategoryModel, null=True, blank=False, on_delete=models.DO_NOTHING
     )

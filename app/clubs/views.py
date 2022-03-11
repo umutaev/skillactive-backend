@@ -56,7 +56,6 @@ class ClubView(ListAPIView, CreateAPIView):
         districts = self.request.query_params.get("districts", None)
         if districts is not None:
             districts = districts.split(",")
-            print(districts)
             queryset = queryset.filter(district__in=districts)
         free = self.request.query_params.get("free", None)
         if free is not None:

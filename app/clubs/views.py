@@ -53,6 +53,9 @@ class ClubView(ListAPIView, CreateAPIView):
         if categories is not None:
             categories = categories.split(",")
             queryset = queryset.filter(category__in=categories)
+        free = self.request.query_params.get("free", None)
+        if free is not None:
+            queryset = queryset.filter(free=bool(free))
         owned = self.request.query_params.get("owned", None)
         if owned is not None and not isinstance(self.request.user, AnonymousUser):
             queryset = queryset.filter(author=self.request.user)
@@ -99,6 +102,7 @@ class ClubView(ListAPIView, CreateAPIView):
                 OpenApiParameter.QUERY,
                 description="Categories separated with comma.",
             ),
+            OpenApiParameter("free", OpenApiTypes.BOOL, OpenApiParameter.QUERY),
         ],
     )
     def get(self, request, *args, **kwargs):

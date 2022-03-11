@@ -12,9 +12,12 @@ class PriceSerializer(serializers.ModelSerializer):
 class ClubSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         price = validated_data.pop("price")
+        price = [PriceObject(**price_item) for price_item in price]
         club_instance = ClubModel.objects.create(**validated_data)
-        for price_item in price:
-            PriceObject.objects.create(club=club_instance, **price_item)
+        club_instance.price.set(price, bulk=False)
+        club_instance.save()
+        """for price_item in price:
+            PriceObject.objects.create(club=club_instance, **price_item)"""
         return club_instance
 
     def update(self, instance, validated_data):
@@ -47,6 +50,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     comments = CommentSerializer(read_only=True, many=True)
     price = PriceSerializer(many=True)
+    free = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = ClubModel
@@ -66,7 +70,6 @@ class ClubSerializer(serializers.ModelSerializer):
             "images",
             "comments",
             "category",
+            "free",
         ]
-        extra_kwargs = {
-            "comments": {"read_only": True},
-        }
+        extra_kwargs = {"comments": {"read_only": True}, "free": {"read_only": True}}

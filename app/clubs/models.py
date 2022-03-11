@@ -1,6 +1,9 @@
+from email.policy import default
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, post_save
 from categories.models import CategoryModel
 
 
@@ -41,3 +44,10 @@ class ClubModel(models.Model):
         CategoryModel, null=True, blank=False, on_delete=models.DO_NOTHING
     )
     images = ArrayField(base_field=models.URLField(), size=10, blank=True, default=list)
+    free = models.BooleanField(default=False)
+
+
+@receiver(post_save, sender=ClubModel)
+def free_field_callback(sender, instance, *args, **kwargs):
+    paid = PriceObject.objects.filter(club=instance, value__gt=0).count()
+    instance.free = not bool(paid)

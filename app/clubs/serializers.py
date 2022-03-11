@@ -47,6 +47,8 @@ class ClubSerializer(serializers.ModelSerializer):
             ]
         )
         instance.address = validated_data.get("address", instance.address)
+        instance.latitude = validated_data.get("latitude", instance.latitude)
+        instance.longitude = validated_data.get("longitude", instance.longitude)
         instance.description = validated_data.get("description", instance.description)
         instance.min_age = validated_data.get("min_age", instance.min_age)
         instance.max_age = validated_data.get("max_age", instance.max_age)
@@ -96,6 +98,8 @@ class ClubSerializer(serializers.ModelSerializer):
             "author",
             "title",
             "address",
+            "latitude",
+            "longitude",
             "description",
             "price",
             "min_age",

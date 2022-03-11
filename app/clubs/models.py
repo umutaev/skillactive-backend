@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save
 from categories.models import CategoryModel
+from districts.models import DistrictModel
 
 
 class PriceObject(models.Model):
@@ -66,6 +67,9 @@ class ClubModel(models.Model):
     opened = models.BooleanField(default=True, null=False)
     category = models.ForeignKey(
         CategoryModel, null=True, blank=False, on_delete=models.DO_NOTHING
+    )
+    district = models.ForeignKey(
+        DistrictModel, null=True, blank=False, on_delete=models.DO_NOTHING
     )
     images = ArrayField(base_field=models.URLField(), size=10, blank=True, default=list)
     free = models.BooleanField(default=False)

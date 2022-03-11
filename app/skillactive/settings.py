@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "categories",
     "drf_spectacular",
     "corsheaders",
+    "districts",
 ]
 
 MIDDLEWARE = [

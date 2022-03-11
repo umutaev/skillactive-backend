@@ -1,6 +1,9 @@
+import email
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from users.email import send_activation_email
+from users.tokens import account_activation_token
+from rest_framework.exceptions import PermissionDenied
 
 UserModel = get_user_model()
 
@@ -30,3 +33,13 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "password",
         )
+
+
+class AccountRestorationRequestSerializer(serializers.Serializer):
+    email = serializers.CharField()
+
+
+class AccountRestorationSerializer(serializers.Serializer):
+    uid = serializers.CharField(write_only=True)
+    token = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)

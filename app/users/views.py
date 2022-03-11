@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
+from users.email import send_restore_mail
 from users.tokens import account_activation_token
 from django.http import JsonResponse, HttpResponse
 
@@ -12,7 +13,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
 
-from users.serializers import UserSerializer
+from users.serializers import (
+    UserSerializer,
+    AccountRestorationSerializer,
+    AccountRestorationRequestSerializer,
+)
 from users.email import send_activation_email
 
 
@@ -32,8 +37,11 @@ class VerifyUser(GenericAPIView):
         uid = int(kwargs["uid"])
         user = self.get_queryset().filter(pk=uid).get()
         if account_activation_token.check_token(user, kwargs["token"]):
+            print(account_activation_token.check_token(user, kwargs["token"]))
             user.is_active = True
+            print(account_activation_token.check_token(user, kwargs["token"]))
             user.save()
+            print(account_activation_token.check_token(user, kwargs["token"]))
             return JsonResponse(
                 self.get_serializer(user).data,
                 safe=False,
@@ -77,3 +85,49 @@ class CheckStaff(RetrieveAPIView):
             return Response(data={"status": True})
         else:
             raise PermissionDenied
+
+
+class UserRestorationRequest(GenericAPIView):
+    serializer_class = AccountRestorationRequestSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=False)
+        try:
+            user = (
+                get_user_model()
+                .objects.filter(email=serializer.validated_data["email"])
+                .get()
+            )
+        except get_user_model().DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        send_restore_mail(user)
+        return Response(
+            status=status.HTTP_200_OK,
+            data={"auth": "Check email"},
+        )
+
+
+class RestoreUser(GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = AccountRestorationSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            user = (
+                get_user_model()
+                .objects.filter(pk=serializer.validated_data["uid"])
+                .get()
+            )
+        except:
+            return Response(status=400)
+        if account_activation_token.check_token(
+            user, serializer.validated_data["token"]
+        ):
+            user.set_password(serializer.validated_data["new_password"])
+            user.save()
+            return Response(status=204)
+        else:
+            return Response(status=400)

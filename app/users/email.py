@@ -13,3 +13,12 @@ def send_activation_email(user):
     )
     to_email = user.email
     send_mail(mail_subject, message, None, [to_email])
+
+
+def send_restore_mail(user):
+    mail_subject = "Restore your account."
+    uid = str(user.pk)
+    token = account_activation_token.make_token(user)
+    message = f"{uid} {token}"
+    to_email = user.email
+    send_mail(mail_subject, message, None, [to_email])

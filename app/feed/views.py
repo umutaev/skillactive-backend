@@ -7,18 +7,22 @@ from rest_framework.decorators import api_view
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import F
 from comments.models import CommentModel
 from comments.serializers import CommentSerializer
 from rest_framework.generics import (
+    GenericAPIView,
     ListAPIView,
     CreateAPIView,
     RetrieveAPIView,
     UpdateAPIView,
     DestroyAPIView,
 )
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 
 class FeedView(ListAPIView, CreateAPIView):
@@ -54,6 +58,57 @@ class FeedRecordView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
         if not request.user.is_staff:
             raise PermissionDenied
         return super().destroy(request, *args, **kwargs)
+
+
+class ViewRequest(GenericAPIView):
+    queryset = FeedModel.objects.all()
+    lookup_field = "pk"
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        feed_item = self.get_object()
+        feed_item.views_amount = F("views_amount") + 1
+        feed_item.save()
+        feed_item = self.get_object()
+        return Response(status=204)
+
+
+class ViewRequest(GenericAPIView):
+    queryset = FeedModel.objects.all()
+    lookup_field = "pk"
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        feed_item = self.get_object()
+        feed_item.views_amount = F("views_amount") + 1
+        feed_item.save()
+        return Response(status=204)
+
+
+class LikeRequest(GenericAPIView):
+    queryset = FeedModel.objects.all()
+    lookup_field = "pk"
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "action",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                required=True,
+                description='upvote if action is "+", downvote if action is "-"',
+            )
+        ]
+    )
+    def post(self, request, *args, **kwargs):
+        feed_item = self.get_object()
+        if request.query_params["action"] == "+":
+            feed_item.likes_amount = F("likes_amount") + 1
+        elif request.query_params["action"] == "-":
+            feed_item.likes_amount = F("likes_amount") - 1
+        feed_item.save()
+        return Response(status=204)
 
 
 @csrf_exempt

@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import F
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -18,6 +19,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 
 class CommentView(CreateAPIView):
@@ -88,6 +91,32 @@ class SpecificCommentView(
     @extend_schema(description="Delete a specific comment by primary key.")
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class LikeRequest(GenericAPIView):
+    queryset = CommentModel.objects.all()
+    lookup_field = "pk"
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "action",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                required=True,
+                description='upvote if action is "+", downvote if action is "-"',
+            )
+        ]
+    )
+    def post(self, request, *args, **kwargs):
+        comment_item = self.get_object()
+        if request.query_params["action"] == "+":
+            comment_item.likes_amount = F("likes_amount") + 1
+        elif request.query_params["action"] == "-":
+            comment_item.likes_amount = F("likes_amount") - 1
+        comment_item.save()
+        return Response(status=204)
 
 
 @csrf_exempt

@@ -26,6 +26,22 @@ class TutorObject(models.Model):
     )
 
 
+class CommunicationObject(models.Model):
+    class Type(models.TextChoices):
+        EMAIL = "EMAIL", "Email"
+        PHONE = "PHONE", "Phone"
+        SITE = "SITE", "Website"
+        VK = "VK", "Vkontakte"
+        INSTAGRAM = "INSTAGRAM", "Instagram"
+        OTHER = "OTHER", "Others"
+
+    type = models.CharField(choices=Type.choices, max_length=9, null=False)
+    value = models.CharField(max_length=256)
+    club = models.ForeignKey(
+        "clubs.ClubModel", related_name="contacts", on_delete=models.CASCADE
+    )
+
+
 class ClubModel(models.Model):
     class Gender(models.TextChoices):
         MALE = "MALE", "Male"
@@ -39,8 +55,6 @@ class ClubModel(models.Model):
     searchable_title = models.CharField(max_length=1024, null=False)
     address = models.CharField(max_length=1024, null=False)
     description = models.TextField()
-    # contacts
-    # tutors
     # timetable
     min_age = models.IntegerField()
     max_age = models.IntegerField()

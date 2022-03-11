@@ -1,5 +1,6 @@
+from attr import field
 from rest_framework import serializers
-from clubs.models import ClubModel, PriceObject, TutorObject
+from clubs.models import ClubModel, PriceObject, TutorObject, CommunicationObject
 from comments.serializers import CommentSerializer
 
 
@@ -15,18 +16,25 @@ class TutorSerializer(serializers.ModelSerializer):
         fields = ["name", "description", "photo", "phone"]
 
 
+class CommunicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommunicationObject
+        fields = ["type", "value"]
+
+
 class ClubSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         price = validated_data.pop("price")
         tutors = validated_data.pop("tutors")
+        contacts = validated_data.pop("contacts")
         price = [PriceObject(**price_item) for price_item in price]
         tutors = [TutorObject(**tutor_item) for tutor_item in tutors]
+        contacts = [CommunicationObject(**contact_item) for contact_item in contacts]
         club_instance = ClubModel.objects.create(**validated_data)
         club_instance.price.set(price, bulk=False)
         club_instance.tutors.set(tutors, bulk=False)
+        club_instance.contacts.set(contacts, bulk=False)
         club_instance.save()
-        """for price_item in price:
-            PriceObject.objects.create(club=club_instance, **price_item)"""
         return club_instance
 
     def update(self, instance, validated_data):
@@ -62,12 +70,21 @@ class ClubSerializer(serializers.ModelSerializer):
                 for tutor_item in tutors
             ]
             instance.tutors.set(tutors_objects)
+        if "contacts" in validated_data:
+            CommunicationObject.objects.filter(club=instance).delete()
+            contacts = validated_data["contacts"]
+            contacts_objects = [
+                CommunicationObject.objects.create(club=instance, **contact_item)
+                for contact_item in contacts
+            ]
+            instance.contacts.set(contacts_objects)
         instance.save()
         return instance
 
     comments = CommentSerializer(read_only=True, many=True)
     price = PriceSerializer(many=True)
     tutors = TutorSerializer(many=True)
+    contacts = CommunicationSerializer(many=True)
     free = serializers.BooleanField(read_only=True)
 
     class Meta:
@@ -90,5 +107,6 @@ class ClubSerializer(serializers.ModelSerializer):
             "category",
             "free",
             "tutors",
+            "contacts",
         ]
         extra_kwargs = {"comments": {"read_only": True}, "free": {"read_only": True}}

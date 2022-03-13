@@ -1,6 +1,12 @@
 from attr import field
 from rest_framework import serializers
-from clubs.models import ClubModel, PriceObject, TutorObject, CommunicationObject
+from clubs.models import (
+    ClubModel,
+    PriceObject,
+    TutorObject,
+    CommunicationObject,
+    TimetableObject,
+)
 from comments.serializers import CommentSerializer
 
 
@@ -22,18 +28,27 @@ class CommunicationSerializer(serializers.ModelSerializer):
         fields = ["type", "value"]
 
 
+class TimetableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TimetableObject
+        fields = ["day_of_the_week", "start_time", "end_time"]
+
+
 class ClubSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         price = validated_data.pop("price")
         tutors = validated_data.pop("tutors")
         contacts = validated_data.pop("contacts")
+        timetable = validated_data.pop("timetable")
         price = [PriceObject(**price_item) for price_item in price]
         tutors = [TutorObject(**tutor_item) for tutor_item in tutors]
         contacts = [CommunicationObject(**contact_item) for contact_item in contacts]
+        timetable = [TimetableObject(**timetable_item) for timetable_item in timetable]
         club_instance = ClubModel.objects.create(**validated_data)
         club_instance.price.set(price, bulk=False)
         club_instance.tutors.set(tutors, bulk=False)
         club_instance.contacts.set(contacts, bulk=False)
+        club_instance.timetable.set(timetable, bulk=False)
         club_instance.save()
         return club_instance
 
@@ -81,6 +96,14 @@ class ClubSerializer(serializers.ModelSerializer):
                 for contact_item in contacts
             ]
             instance.contacts.set(contacts_objects)
+        if "timetable" in validated_data:
+            TimetableObject.objects.filter(club=instance).delete()
+            timetable = validated_data["timetable"]
+            timetable_objects = [
+                TimetableObject.objects.create(club=instance, **timetable_item)
+                for timetable_item in timetable
+            ]
+            instance.timetable.set(timetable_objects)
         instance.save()
         return instance
 
@@ -89,6 +112,7 @@ class ClubSerializer(serializers.ModelSerializer):
     tutors = TutorSerializer(many=True)
     contacts = CommunicationSerializer(many=True)
     free = serializers.BooleanField(read_only=True)
+    timetable = TimetableSerializer(many=True)
 
     class Meta:
         model = ClubModel
@@ -114,5 +138,6 @@ class ClubSerializer(serializers.ModelSerializer):
             "tutors",
             "contacts",
             "district",
+            "timetable",
         ]
         extra_kwargs = {"comments": {"read_only": True}, "free": {"read_only": True}}

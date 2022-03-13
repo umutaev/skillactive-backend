@@ -61,11 +61,25 @@ class ClubView(ListAPIView, CreateAPIView):
         if free is not None:
             queryset = queryset.filter(free=bool(free))
         owned = self.request.query_params.get("owned", None)
+
+        day_of_the_week = self.request.query_params.get("day_of_the_week", None)
+        if day_of_the_week is not None:
+            days = day_of_the_week.split(",")
+            queryset = queryset.filter(timetable__day_of_the_week__in=days)
+
+        time_start = self.request.query_params.get("time_start", None)
+        if time_start is not None:
+            queryset = queryset.filter(timetable__start_time__gte=time_start)
+
+        time_end = self.request.query_params.get("time_end", None)
+        if time_end is not None:
+            queryset = queryset.filter(timetable__end_time__gte=time_end)
+
         if owned is not None and not isinstance(self.request.user, AnonymousUser):
             queryset = queryset.filter(author=self.request.user)
         elif not self.request.user.is_staff:
             queryset = queryset.filter(opened=True)
-        return queryset.all()
+        return queryset.distinct("pk").all()
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -113,6 +127,24 @@ class ClubView(ListAPIView, CreateAPIView):
                 description="Districts separated with comma.",
             ),
             OpenApiParameter("free", OpenApiTypes.BOOL, OpenApiParameter.QUERY),
+            OpenApiParameter(
+                "day_of_the_week",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                description="Days of the week separated with comma.",
+            ),
+            OpenApiParameter(
+                "time_start",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                description="%H:%M format (06:30)",
+            ),
+            OpenApiParameter(
+                "time_end",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                description="%H:%M format (07:30)",
+            ),
         ],
     )
     def get(self, request, *args, **kwargs):

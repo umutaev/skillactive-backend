@@ -43,6 +43,24 @@ class CommunicationObject(models.Model):
     )
 
 
+class TimetableObject(models.Model):
+    class DayOfTheWeek(models.IntegerChoices):
+        MONDAY = 1
+        TUESDAY = 2
+        WEDNESDAY = 3
+        THURSDAY = 4
+        FRIDAY = 5
+        SATURDAY = 6
+        SUNDAY = 7
+
+    day_of_the_week = models.IntegerField(choices=DayOfTheWeek.choices)
+    start_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=True)
+    club = models.ForeignKey(
+        "clubs.ClubModel", related_name="timetable", on_delete=models.CASCADE
+    )
+
+
 class ClubModel(models.Model):
     class Gender(models.TextChoices):
         MALE = "MALE", "Male"

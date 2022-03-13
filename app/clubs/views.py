@@ -76,7 +76,11 @@ class ClubView(ListAPIView, CreateAPIView):
             queryset = queryset.filter(timetable__end_time__gte=time_end)
 
         if owned is not None and not isinstance(self.request.user, AnonymousUser):
-            queryset = queryset.filter(author=self.request.user)
+            # fmt: off
+            queryset = queryset.filter(
+                Q(author=self.request.user) | Q(author__owned_organization__managers=self.request.user)
+            )
+            # fmt: on
         elif not self.request.user.is_staff:
             queryset = queryset.filter(opened=True)
         return queryset.distinct("pk").all()

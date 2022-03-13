@@ -29,6 +29,8 @@ class ApplicationsView(ListAPIView, CreateAPIView):
         queryset = queryset.filter(club=kwargs["club"]).all()
         if (
             not queryset.first().club.author == request.user
+            and not request.user
+            in queryset.first().club.author.owned_organization.managers.all()
             and not request.user.is_staff
         ):
             raise PermissionDenied
@@ -61,6 +63,8 @@ class ApplicationView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         if (
             not self.get_object().club.author == request.user
+            and not request.user
+            in self.get_object().club.author.owned_organization.managers.all()
             and not request.user.is_staff
         ):
             raise PermissionDenied
@@ -69,6 +73,8 @@ class ApplicationView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     def update(self, request, *args, **kwargs):
         if (
             not self.get_object().club.author == request.user
+            and not request.user
+            in self.get_object().club.author.owned_organization.managers.all()
             and not request.user.is_staff
         ):
             raise PermissionDenied
@@ -77,6 +83,8 @@ class ApplicationView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     def partial_update(self, request, *args, **kwargs):
         if (
             not self.get_object().club.author == request.user
+            and not request.user
+            in self.get_object().club.author.owned_organization.managers.all()
             and not request.user.is_staff
         ):
             raise PermissionDenied
@@ -85,6 +93,8 @@ class ApplicationView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         if (
             not self.get_object().club.author == request.user
+            and not request.user
+            in self.get_object().club.author.owned_organization.managers.all()
             and not request.user.is_staff
         ):
             raise PermissionDenied

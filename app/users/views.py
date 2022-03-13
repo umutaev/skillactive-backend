@@ -5,7 +5,12 @@ from users.email import send_restore_mail
 from users.tokens import account_activation_token
 from django.http import JsonResponse, HttpResponse
 
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    GenericAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework import permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -17,6 +22,7 @@ from users.serializers import (
     UserSerializer,
     AccountRestorationSerializer,
     AccountRestorationRequestSerializer,
+    GrantStaffSerializer,
 )
 from users.email import send_activation_email
 
@@ -131,3 +137,14 @@ class RestoreUser(GenericAPIView):
             return Response(status=204)
         else:
             return Response(status=400)
+
+
+class MakeStaff(RetrieveAPIView, UpdateAPIView):
+    permission_classes = [permissions.IsAdminUser]
+    serializer_class = GrantStaffSerializer
+    queryset = get_user_model().objects.all()
+    lookup_field = "id"
+
+    def retrieve(self, request, *args, **kwargs):
+        print(self.get_object())
+        return super().retrieve(request, *args, **kwargs)

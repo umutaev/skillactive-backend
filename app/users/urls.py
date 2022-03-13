@@ -7,6 +7,7 @@ from .views import (
     CheckStaff,
     RestoreUser,
     UserRestorationRequest,
+    MakeStaff,
 )
 
 urlpatterns = [
@@ -16,4 +17,5 @@ urlpatterns = [
     path("restore/", RestoreUser.as_view()),
     path("verify/<str:uid>/<str:token>", VerifyUser.as_view(), name="verify-account"),
     path("check_staff/", CheckStaff.as_view()),
+    path("<int:id>/grant_staff/", MakeStaff.as_view()),
 ]

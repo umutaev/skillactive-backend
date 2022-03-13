@@ -43,3 +43,15 @@ class AccountRestorationSerializer(serializers.Serializer):
     uid = serializers.CharField(write_only=True)
     token = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)
+
+
+class GrantStaffSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        instance.is_staff = validated_data.get(validated_data, instance.is_staff)
+        instance.save()
+        return instance
+
+    class Meta:
+        model = UserModel
+        fields = ("id", "username", "is_staff")
+        extra_kwargs = {"id": {"read_only": True}, "username": {"read_only": True}}

@@ -5,6 +5,9 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from django.conf.urls.static import static
+from skillactive import settings
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -18,4 +21,8 @@ urlpatterns = [
     path("categories/", include("categories.urls")),
     path("districts/", include("districts.urls")),
     path("organizations/", include("organizations.urls")),
+    path("file/", include("fileupload.urls")),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

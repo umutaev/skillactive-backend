@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 from rest_framework.reverse import reverse
 from users.tokens import account_activation_token
 from skillactive.settings import HOST_VARIABLE
+from django.template.loader import render_to_string
 
 
 def send_activation_email(user):
@@ -12,7 +13,10 @@ def send_activation_email(user):
         "verify-account", kwargs={"uid": uid, "token": token}
     )
     to_email = user.email
-    send_mail(mail_subject, message, None, [to_email])
+    html_page = render_to_string(
+        "mail.html", {"username": user.username, "link": message}
+    )
+    send_mail(mail_subject, message, None, [to_email], html_message=html_page)
 
 
 def send_restore_mail(user):

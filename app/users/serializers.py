@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from users.email import send_activation_email
 from users.tokens import account_activation_token
 from rest_framework.exceptions import PermissionDenied
+from users.models import UserProfile
 
 UserModel = get_user_model()
 
@@ -17,6 +18,8 @@ class UserSerializer(serializers.ModelSerializer):
             email=validated_data["email"],
             username=validated_data["username"],
             password=validated_data["password"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
         )
         user.is_active = False
         send_activation_email(user)
@@ -55,3 +58,19 @@ class GrantStaffSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = ("id", "username", "is_staff")
         extra_kwargs = {"id": {"read_only": True}, "username": {"read_only": True}}
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        instance.profile_photo = validated_data.get(
+            "profile_photo", instance.profile_photo
+        )
+        return instance
+
+    class Meta:
+        model = UserProfile
+        fields = ("owner", "creation_date", "profile_photo")
+        extra_kwargs = {
+            "owner": {"read_only": True},
+            "creation_date": {"read_only": True},
+        }

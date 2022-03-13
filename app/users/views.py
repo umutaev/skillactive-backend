@@ -23,8 +23,10 @@ from users.serializers import (
     AccountRestorationSerializer,
     AccountRestorationRequestSerializer,
     GrantStaffSerializer,
+    UserProfileSerializer,
 )
 from users.email import send_activation_email
+from users.models import UserProfile
 
 
 class CreateUserView(CreateAPIView):
@@ -148,3 +150,20 @@ class MakeStaff(RetrieveAPIView, UpdateAPIView):
     def retrieve(self, request, *args, **kwargs):
         print(self.get_object())
         return super().retrieve(request, *args, **kwargs)
+
+
+class ProfileView(RetrieveAPIView, UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = UserProfileSerializer
+    queryset = UserProfile.objects.all()
+    lookup_field = "owner"
+
+    def update(self, request, *args, **kwargs):
+        if not self.get_object().owner == request.user and not request.user.is_staff:
+            raise PermissionDenied
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        if not self.get_object().owner == request.user and not request.user.is_staff:
+            raise PermissionDenied
+        return super().partial_update(request, *args, **kwargs)

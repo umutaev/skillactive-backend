@@ -8,6 +8,7 @@ from .views import (
     RestoreUser,
     UserRestorationRequest,
     MakeStaff,
+    ProfileView,
 )
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
     path("verify/<str:uid>/<str:token>", VerifyUser.as_view(), name="verify-account"),
     path("check_staff/", CheckStaff.as_view()),
     path("<int:id>/grant_staff/", MakeStaff.as_view()),
+    path("<int:owner>/profile/", ProfileView.as_view()),
 ]

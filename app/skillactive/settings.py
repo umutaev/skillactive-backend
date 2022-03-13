@@ -181,7 +181,7 @@ EMAIL_HOST = "smtp.mail.ru"
 EMAIL_HOST_PASSWORD = "4UGJ9Ab7dg43Ecy"
 EMAIL_HOST_USER = "noreply@skillactive.ru"
 EMAIL_PORT = "465"
-DEFAULT_FROM_EMAIL = "noreply@skillactive.ru"
+DEFAULT_FROM_EMAIL = "Skillactive <noreply@skillactive.ru>"
 EMAIL_USE_SSL = True
 EMAIL_TIMEOUT = 10
 

@@ -50,13 +50,13 @@
 		</svg>
 		<div id="content">
 			<h1>
-				Здравствуйте {{ username }},
+				Здравствуйте {{ first_name }} {{ last_name }},
 			</h1>
 			<p class="first">
 				На вашу почту зарегистрирован аккаунт на skillactive.ru. Пожалуйста, подтвердите регистрацию, нажав
 				кнопку ниже.
 			</p>
-			<a class="button" href="{{ link }}">
+			<a class="button" href="https://skillactive.ru/confirm_mail?token={{ token }}&uid={{ uid }}">
 				Подтвердить почту
 			</a>
 			<p class="help">
@@ -109,7 +109,8 @@
 			outline: none;
 			display: block;
 			margin: 0 auto;
-			width: fit-content;
+			max-width: 270px;
+			text-align: center;
 			padding: 20px 50px;
 			background: #FEA300;
 			border-radius: 15px;

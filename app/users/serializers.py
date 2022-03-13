@@ -45,9 +45,9 @@ class AccountRestorationSerializer(serializers.Serializer):
     new_password = serializers.CharField(write_only=True)
 
 
-class GrantStaffSerializer(serializers.Serializer):
+class GrantStaffSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
-        instance.is_staff = validated_data.get(validated_data, instance.is_staff)
+        instance.is_staff = validated_data.get("is_staff", instance.is_staff)
         instance.save()
         return instance
 

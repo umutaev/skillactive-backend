@@ -178,10 +178,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # EMAIL
 EMAIL_HOST = "smtp.mail.ru"
-EMAIL_HOST_PASSWORD = "4UGJ9Ab7dg43Ecy"
-EMAIL_HOST_USER = "noreply@skillactive.ru"
+EMAIL_HOST_PASSWORD = get_env("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = get_env("EMAIL_HOST_USER")
 EMAIL_PORT = "465"
-DEFAULT_FROM_EMAIL = "Skillactive <noreply@skillactive.ru>"
+DEFAULT_FROM_EMAIL = f"Skillactive <{EMAIL_HOST_USER}>"
 EMAIL_USE_SSL = True
 EMAIL_TIMEOUT = 10
 

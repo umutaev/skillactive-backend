@@ -34,7 +34,12 @@ class ClubView(ListAPIView, CreateAPIView):
         queryset = self.queryset
         if title is not None:
             searchable_title = "".join([i.lower() for i in title if i.isalpha()])
-            queryset = queryset.filter(searchable_title__contains=searchable_title)
+            queryset = queryset.filter(
+                Q(searchable_title__icontains=searchable_title)
+                | Q(category__name__icontains=searchable_title)
+                | Q(category__description__icontains=searchable_title)
+                | Q(description__icontains=searchable_title)
+            )
         min_price = self.request.query_params.get("min_price", None)
         if min_price is not None:
             queryset = queryset.filter(price__gte=min_price)
@@ -112,7 +117,12 @@ class ClubView(ListAPIView, CreateAPIView):
 
     @extend_schema(
         parameters=[
-            OpenApiParameter("title", OpenApiTypes.STR, OpenApiParameter.QUERY),
+            OpenApiParameter(
+                "title",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                description="Will search by title, description and category",
+            ),
             OpenApiParameter("min_price", OpenApiTypes.INT, OpenApiParameter.QUERY),
             OpenApiParameter("max_price", OpenApiTypes.INT, OpenApiParameter.QUERY),
             OpenApiParameter("age", OpenApiTypes.INT, OpenApiParameter.QUERY),

@@ -68,7 +68,11 @@ class ClubModel(models.Model):
         BOTH = "BOTH", "Male and Female"
 
     author = models.ForeignKey(
-        get_user_model(), null=False, blank=False, on_delete=models.CASCADE
+        get_user_model(),
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="clubs",
     )
     title = models.CharField(max_length=1024, null=False)
     searchable_title = models.CharField(max_length=1024, null=False)

@@ -10,6 +10,7 @@ from rest_framework.generics import (
     GenericAPIView,
     RetrieveAPIView,
     UpdateAPIView,
+    DestroyAPIView,
 )
 from rest_framework import permissions
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -152,7 +153,7 @@ class MakeStaff(RetrieveAPIView, UpdateAPIView):
         return super().retrieve(request, *args, **kwargs)
 
 
-class ProfileView(RetrieveAPIView, UpdateAPIView):
+class ProfileView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
@@ -167,3 +168,18 @@ class ProfileView(RetrieveAPIView, UpdateAPIView):
         if not self.get_object().owner == request.user and not request.user.is_staff:
             raise PermissionDenied
         return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance.owner == request.user and not request.user.is_staff:
+            raise PermissionDenied
+        instance.owner.set_unusable_password()
+        for club in instance.owner.clubs.all():
+            club.opened = False
+            club.save()
+        try:
+            instance.owner.auth_token.delete()
+        except get_user_model().auth_token.RelatedObjectDoesNotExist:
+            pass
+        instance.save()
+        return Response(status=204)

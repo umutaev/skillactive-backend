@@ -14,6 +14,8 @@ services:
       - SECRET_KEY
       - DEBUG
       - CORS_ALLOW_ALL_ORIGINS
+      - EMAIL_HOST_USER
+      - EMAIL_HOST_PASSWORD
     depends_on:
       - database
   database:

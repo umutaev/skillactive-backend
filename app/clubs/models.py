@@ -77,8 +77,8 @@ class ClubModel(models.Model):
     title = models.CharField(max_length=1024, null=False)
     searchable_title = models.CharField(max_length=1024, null=False)
     address = models.CharField(max_length=1024, null=False)
-    latitude = models.DecimalField(max_digits=10, decimal_places=7, default=0)
-    longitude = models.DecimalField(max_digits=10, decimal_places=7, default=0)
+    latitude = models.DecimalField(max_digits=11, decimal_places=8, default=0)
+    longitude = models.DecimalField(max_digits=11, decimal_places=8, default=0)
     description = models.TextField()
     # timetable
     min_age = models.IntegerField()

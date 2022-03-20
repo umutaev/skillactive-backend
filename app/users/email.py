@@ -31,4 +31,13 @@ def send_restore_mail(user):
     token = account_activation_token.make_token(user)
     message = f"{uid} {token}"
     to_email = user.email
+    html_page = render_to_string(
+        "recover.html",
+        {
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "uid": uid,
+            "token": token,
+        },
+    )
     send_mail(mail_subject, message, None, [to_email])

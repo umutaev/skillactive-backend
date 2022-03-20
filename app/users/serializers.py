@@ -67,6 +67,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
         return instance
 
+    owner = UserSerializer()
+
     class Meta:
         model = UserProfile
         fields = ("owner", "creation_date", "profile_photo")

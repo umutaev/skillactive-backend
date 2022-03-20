@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<div id="root">
+		<div id="content">
+			<h1>
+				Здравствуйте {{ first_name }} {{ last_name }},
+			</h1>
+			<p class="first">
+				Вы отправили запрос на восстановление пароля. Для окончания восстановления перейдите по ссылке ниже.
+			</p>
+			<a class="button" href="https://skillactive.ru/new_password?token={{ token }}&uid={{ uid }}">
+				Подтвердить почту
+			</a>
+			<p class="help">
+				Нужна помощь?
+				<a href="mailto:info@skillactive.ru">
+					Сяжитесь с командой поддержки.
+				</a>
+			</p>
+		</div>
+	</div>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		#root {
+			width: 100%;
+			background-color: #F8F8F8;
+			padding: 50px 0;
+		}
+
+		#content {
+			background-color: white;
+			border-radius: 40px;
+			padding: 40px;
+			width: 600px;
+			margin: 0 auto;
+			font-family: 'Montserrat', sans-serif;
+		}
+
+		#content h1 {
+			color: #272727;
+			font-weight: 800;
+			font-size: 24px;
+		}
+
+		#content .first {
+			color: #9F9F9F;
+			margin-bottom: 50px;
+		}
+
+		#content .button {
+			border: none;
+			outline: none;
+			display: block;
+			margin: 0 auto;
+			max-width: 270px;
+			text-align: center;
+			padding: 20px 50px;
+			background: #FEA300;
+			border-radius: 15px;
+
+			color: white;
+			font-weight: bold;
+			font-size: 16px;
+			text-decoration: none;
+		}
+
+		#content .help {
+			margin-top: 50px;
+			text-align: center;
+			color: #9F9F9F;
+		}
+
+		#content .help a {
+			color: #FEA300;
+		}
+
+		@media screen and (max-width: 600px) {
+			#content {
+				width: 100%;
+				padding-right: 20px;
+				padding-left: 20px;
+			}
+		}
+	</style>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</body>
+
+</html>

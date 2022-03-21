@@ -40,4 +40,4 @@ def send_restore_mail(user):
             "token": token,
         },
     )
-    send_mail(mail_subject, message, None, [to_email])
+    send_mail(mail_subject, message, None, [to_email], html_message=html_page)

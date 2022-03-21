@@ -9,6 +9,7 @@ from .views import (
     UserRestorationRequest,
     MakeStaff,
     ProfileView,
+    ListProfilesView,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     path("check_staff/", CheckStaff.as_view()),
     path("<int:id>/grant_staff/", MakeStaff.as_view()),
     path("<int:owner>/profile/", ProfileView.as_view()),
+    path("profiles/", ListProfilesView.as_view()),
 ]

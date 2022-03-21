@@ -11,6 +11,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     UpdateAPIView,
     DestroyAPIView,
+    ListAPIView,
 )
 from rest_framework import permissions
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -183,3 +184,9 @@ class ProfileView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
             pass
         instance.save()
         return Response(status=204)
+
+
+class ListProfilesView(ListAPIView):
+    permission_classes = [permissions.IsAdminUser]
+    serializer_class = UserProfileSerializer
+    queryset = UserProfile.objects.all()

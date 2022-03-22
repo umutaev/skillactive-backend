@@ -15,6 +15,7 @@ class UserProfile(models.Model):
     )
     creation_date = models.DateTimeField(auto_now_add=True)
     profile_photo = models.CharField(max_length=1024, null=True, default=None)
+    blocked = models.BooleanField(default=False)
 
 
 @receiver(post_save, sender=get_user_model())

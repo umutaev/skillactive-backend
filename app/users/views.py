@@ -175,6 +175,7 @@ class ProfileView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
         if not instance.owner == request.user and not request.user.is_staff:
             raise PermissionDenied
         instance.owner.set_unusable_password()
+        instance.owner.save()
         for club in instance.owner.clubs.all():
             club.opened = False
             club.save()
@@ -182,6 +183,7 @@ class ProfileView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
             instance.owner.auth_token.delete()
         except get_user_model().auth_token.RelatedObjectDoesNotExist:
             pass
+        instance.blocked = True
         instance.save()
         return Response(status=204)
 

@@ -71,8 +71,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ("owner", "creation_date", "profile_photo")
+        fields = ("owner", "creation_date", "profile_photo", "blocked")
         extra_kwargs = {
             "owner": {"read_only": True},
             "creation_date": {"read_only": True},
+            "blocked": {"read_only": True},
         }

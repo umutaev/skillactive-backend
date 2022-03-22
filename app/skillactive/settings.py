@@ -177,7 +177,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # EMAIL
-EMAIL_HOST = "smtp.mail.ru"
+EMAIL_HOST = get_env("EMAIL_HOST", default="smtp.mail.ru")
 EMAIL_HOST_PASSWORD = get_env("EMAIL_HOST_PASSWORD")
 EMAIL_HOST_USER = get_env("EMAIL_HOST_USER")
 EMAIL_PORT = "465"

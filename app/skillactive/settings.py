@@ -40,8 +40,8 @@ SECRET_KEY = str(get_env("SECRET_KEY"))
 DEBUG = bool(get_env("DEBUG", default=False))
 
 ALLOWED_HOSTS = [
-    "www.skillactive.ru",
-    "skillactive.ru"
+    ".skillactive.ru",
+    "*"
 ]
 
 

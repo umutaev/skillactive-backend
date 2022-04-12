@@ -22,5 +22,6 @@ urlpatterns = [
     path("districts/", include("districts.urls")),
     path("organizations/", include("organizations.urls")),
     path("file/", include("fileupload.urls")),
-    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

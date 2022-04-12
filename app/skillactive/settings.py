@@ -39,7 +39,10 @@ SECRET_KEY = str(get_env("SECRET_KEY"))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(get_env("DEBUG", default=False))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "www.skillactive.ru",
+    "skillactive.ru"
+]
 
 
 # Application definition

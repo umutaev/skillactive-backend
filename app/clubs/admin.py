@@ -7,7 +7,12 @@ from clubs.models import (
     TimetableObject,
 )
 
-admin.site.register(ClubModel)
+
+class ClubAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'description', 'public']
+
+
+admin.site.register(ClubModel, ClubAdmin)
 admin.site.register(PriceObject)
 admin.site.register(TutorObject)
 admin.site.register(CommunicationObject)

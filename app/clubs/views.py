@@ -87,7 +87,7 @@ class ClubView(ListAPIView, CreateAPIView):
             )
             # fmt: on
         elif not self.request.user.is_staff:
-            queryset = queryset.filter(opened=True)
+            queryset = queryset.filter(opened=True, public=True)
         return queryset.distinct("pk").all()
 
     def create(self, request, *args, **kwargs):

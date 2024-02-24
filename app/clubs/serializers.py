@@ -72,6 +72,7 @@ class ClubSerializer(serializers.ModelSerializer):
         instance.images = validated_data.get("images", instance.images)
         instance.category = validated_data.get("category", instance.category)
         instance.district = validated_data.get("district", instance.district)
+        instance.public = validated_data.get("public", instance.public)
         if "price" in validated_data:
             PriceObject.objects.filter(club=instance).delete()
             price = validated_data["price"]
@@ -139,5 +140,6 @@ class ClubSerializer(serializers.ModelSerializer):
             "contacts",
             "district",
             "timetable",
+            "public"
         ]
-        extra_kwargs = {"comments": {"read_only": True}, "free": {"read_only": True}}
+        extra_kwargs = {"comments": {"read_only": True}, "free": {"read_only": True}, "public": {"read_only": True}}

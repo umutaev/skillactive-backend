@@ -95,6 +95,7 @@ class ClubModel(models.Model):
     )
     images = ArrayField(base_field=models.URLField(), size=10, blank=True, default=list)
     free = models.BooleanField(default=False)
+    public = models.BooleanField(default=False)
 
 
 @receiver(post_save, sender=ClubModel)
